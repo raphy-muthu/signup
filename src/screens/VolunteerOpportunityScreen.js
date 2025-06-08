@@ -1,6 +1,7 @@
+import { useState } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
-import { ImageBackground } from "expo-image";
+import { Image, ImageBackground } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
@@ -24,6 +25,13 @@ export default function VolunteerOpportunityScreen({ route, navigation }) {
 
   const tagsIcons = tags.map((text) => <Tag key={text} text={text} />);
 
+  const [showImages, setShowImages] = useState(false);
+  const imageGallery = [
+    { uri: "https://example.com/poster1.jpg" },
+    { uri: "https://example.com/poster2.jpg" },
+    { uri: "https://example.com/program.jpg" },
+  ];
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.banner}>
@@ -39,14 +47,7 @@ export default function VolunteerOpportunityScreen({ route, navigation }) {
             style={{ width: "100%", height: "100%", position: "absolute" }}
           ></LinearGradient>
         </ImageBackground>
-        <View
-          style={[
-            {
-              justifyContent: "flex-end",
-              marginLeft: 20,
-            },
-          ]}
-        >
+        <View style={{ justifyContent: "flex-end", marginLeft: 20 }}>
           <Text style={styles.headerText}>{title}</Text>
         </View>
       </View>
@@ -70,18 +71,45 @@ export default function VolunteerOpportunityScreen({ route, navigation }) {
               <Text style={styles.detailsText}>{location}</Text>
             </View>
           </View>
-          {description != "" ? (
+
+          {description !== "" ? (
             <View style={styles.about}>
               <Heading>About</Heading>
               <Text style={{ fontSize: 14 }}>{description}</Text>
             </View>
           ) : null}
+
           {tags.length > 0 ? (
             <View style={styles.tagsContainer}>
               <Heading>Tags</Heading>
               <View style={styles.tags}>{tagsIcons}</View>
             </View>
           ) : null}
+
+          {/* Image Gallery Toggle Button */}
+          <Pressable onPress={() => setShowImages(!showImages)}>
+            <NextButton>
+              {showImages ? "Hide Posters & Programs" : "Show Posters & Programs"}
+            </NextButton>
+          </Pressable>
+
+          {/* Image Gallery */}
+          {showImages && (
+            <View style={{ marginTop: 15 }}>
+              <Heading>Gallery</Heading>
+              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+                {imageGallery.map((img, index) => (
+                  <Image
+                    key={index}
+                    source={img}
+                    style={{ width: 100, height: 140, borderRadius: 10, marginRight: 10, marginBottom: 10 }}
+                    resizeMode="cover"
+                  />
+                ))}
+              </View>
+            </View>
+          )}
+
           <View style={styles.lowerRight}>
             {isSubmitted ? (
               <Text style={styles.alreadySubmitted}>
